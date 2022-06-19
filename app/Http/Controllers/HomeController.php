@@ -2,20 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * Show the application dashboard.
      *
@@ -23,6 +14,28 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $products = Product::all();
+        return view('index')->with('products',$products);
     }
+
+    public function checkout(Request $request)
+    {
+        $params = $request->all();
+        $product = Product::find($params["product_id"])->first();
+        return view('checkout')->with('data', [
+            "params" => $params,
+            "product" => $product
+        ]);
+    }
+
+    public function resume(Request $request)
+    {       
+        $params = $request->all();
+        $product = Product::find($params["product_id"])->first();
+        return view('resume')->with('data', [
+            "params" => $params,
+            "product" => $product
+        ]);
+    }
+
 }

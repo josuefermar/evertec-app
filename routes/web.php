@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +16,34 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Auth::routes();
+Auth::routes([
+    'register' => false,
+    'reset' => false,
+    'verify' => false,
+]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::get(
+    '/admin/dashboard', 
+    [AdminController::class, 'dashboard']
+)->name('admin.dashboard');
+
+Route::post(
+    '/checkout', 
+    [HomeController::class, 'checkout']
+)->name('checkout');
+
+Route::post(
+    '/resume', 
+    [HomeController::class, 'resume']
+)->name('resume');
+
+Route::post(
+    '/order/create', 
+    [OrderController::class, 'create']
+)->name('order.create');

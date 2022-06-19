@@ -18,9 +18,8 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Admin',
             'email' => 'admin@admin.com',
+            'mobile' => '3126770363',
             'password' => bcrypt('Evertec.2020*')
         ])->assignRole('Admin');
-
-        User::factory()->create();
     }
 }
