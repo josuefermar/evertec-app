@@ -1,29 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
+<link rel="stylesheet" href="{{asset('css/admin/dashboard.css')}}">
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-4 col-sm-2">
-            <a href="#">
-                <div class="card" style="width: 18rem;">
+        <div class="col-md-12">
+            <a href="{{route('admin.orders.index')}}">
+                <div class="card">
                     <img class="card-img-top" 
                     src="{{ asset('images/orders.svg') }}" 
                     alt="Card image cap">
                     <div class="card-body">
-                      <h5 class="card-title">Ordenes</h5>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-4 col-sm-2">
-            <a href="#">
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top" 
-                    src="{{ asset('images/orders.svg') }}" 
-                    alt="Card image cap">
-                    <div class="card-body">
-                      <h5 class="card-title">Usuarios</h5>
+                      <h5 class="card-title">
+                        <button type="button" class="btn btn-primary">
+                            Ordenes de compra
+                        </button>                            
+                      </h5>
                     </div>
                 </div>
             </a>

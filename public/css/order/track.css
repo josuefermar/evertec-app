@@ -1,0 +1,83 @@
+
+    .card .card-title{
+        font-weight: bold !important;
+    }
+    .card-img-top{
+        width: 210px !important;
+        margin: auto;
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    label {
+        display: inline-block;
+        margin-bottom: 0.5rem;
+    }
+    .form-control {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        text-align: -webkit-left !important;
+    }
+
+    .row-element{
+        text-align: -webkit-center;
+    }
+
+    .form-control{
+        width: 94%;
+    }
+
+    .search-button{
+        background-color: #FF6C0C;
+        border-color: #FF6C0C;
+    }
+
+    .search-button:hover{
+        background-color: #E55B00;
+        border-color: #E55B00;
+    }
+
+    .card{
+        width: 30rem;
+    }
+
+    .row-element .card{
+        height: 25rem;
+    }
+
+    .row-element .card .card-title{
+        margin-top: 4%
+    }
+
+    .error{
+        color: red;
+    }
+
+    .row-element .card .card-body .form-group.mb-2{
+        text-align: -webkit-left !important; 
+        padding-left: 5%
+    }
+
+    .search-group{
+        width: 100%;
+        position: absolute;
+        bottom: 5%;
+    }
+
+    @media (max-width: 600px) {
+        .card{
+            width: 19rem;
+        }
+    }

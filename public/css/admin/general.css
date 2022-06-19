@@ -1,0 +1,11 @@
+
+    .container.order-detail a{
+        color: #FF6C0C;
+    }
+
+    .container.order-detail a:hover{
+        color: #E55B00;
+    }
+    .hidden{
+        display: none
+    }

@@ -53,7 +53,7 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="{{Route('order.track')}}">
                                     Rastreo Orden
                                 </a>
                             </li>
@@ -71,14 +71,14 @@
                                 <div class="dropdown-menu dropdown-menu-end" 
                                     aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" 
+                                        href="{{ route('admin.dashboard') }}">
+                                        Dashboard
+                                    </a>
+                                    <a class="dropdown-item" 
                                         href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                         document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
-                                    </a>
-                                    <a class="dropdown-item" 
-                                        href="{{ route('admin.dashboard') }}">
-                                        Dashboard
                                     </a>
 
                                     <form id="logout-form" 

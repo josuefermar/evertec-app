@@ -2,6 +2,6 @@
 
 @section('content')
     <div class="container">
-        @include('products_list')
+        @include('forms.order_detail')
     </div>
 @endsection

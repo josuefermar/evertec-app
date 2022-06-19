@@ -1,0 +1,30 @@
+a{
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.card-title{
+    text-align: center;
+}
+
+.card-title .btn{
+    text-align: center;
+}
+
+.card-title .btn{
+    background-color: #FF6C0C;
+    border-color: #FF6C0C;
+}
+
+.card-title .btn:hover{
+    background-color: #E55B00;
+    border-color: #E55B00;
+}
+.container .row div{
+    text-align: -webkit-center;
+}
+
+.card{
+    width: 18rem;
+}
