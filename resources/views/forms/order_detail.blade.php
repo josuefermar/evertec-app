@@ -10,11 +10,6 @@
                     <h5 class="card-title justify-content-center">
                         <div>DETALLE DE LA ORDEN </div>
                         @switch($data['order']->status)
-                        @case('CREATED')
-                            <div class="alert alert-warning" role="alert">
-                                creada
-                            </div>
-                            @break
                         @case('PAYED')
                             <div class="alert alert-success" role="alert">
                                 pagada
@@ -23,6 +18,11 @@
                         @case('REJECTED')
                             <div class="alert alert-danger" role="alert">
                                 rechazada
+                            </div>
+                            @break
+                        @default
+                            <div class="alert alert-warning" role="alert">
+                                creada
                             </div>
                             @break
                         @endswitch
@@ -75,10 +75,15 @@
                             </tr>
                         </tfoot>
                     </table>
-                    
+                    @if($errors->any())
+                        <div class="alert alert-danger">
+                            {{$errors->first()}}
+                        </div>
+                    @endif
                     @if ($data['view_name'] == 'order.detail' && 
                         ($data['order']->status == 'CREATED' || 
-                        $data['order']->status == 'REJECTED'))
+                        $data['order']->status == 'REJECTED' || 
+                        $data['order']->status == 'FAILED'))
                         <div class="form-group submit-group">
                             <button type="submit" 
                                 class="btn btn-primary purchase-button">

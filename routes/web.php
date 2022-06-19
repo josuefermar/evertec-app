@@ -75,6 +75,12 @@ Route::post(
 )->name('order.search');
 
 Route::get(
-    '/order/detail/{id}',
+    '/order/detail/{hash}',
     [OrderController::class, 'detail']
 )->name('order.detail');
+
+
+Route::get(
+    '/order/check/status',
+    [OrderController::class, 'checkOrderStatus']
+)->name('order.check.status');

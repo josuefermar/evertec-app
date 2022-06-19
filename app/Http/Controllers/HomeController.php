@@ -22,7 +22,8 @@ class HomeController extends Controller
     {
         $params = $request->all();
         $product = Product::find($params["product_id"])->first();
-        return view('checkout')->with('data', [
+        return view('checkout')->with('data', 
+        [
             "params" => $params,
             "product" => $product
         ]);
@@ -34,7 +35,8 @@ class HomeController extends Controller
         $product = Product::find($params["product_id"])->first();
 
         $view_name = 'resume';
-        return view($view_name)->with('data', [
+        return view($view_name)->with('data', 
+        [
             "params" => $params,
             "product" => $product,
             "view_name" => $view_name

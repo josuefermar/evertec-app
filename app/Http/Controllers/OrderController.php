@@ -27,27 +27,40 @@ class OrderController extends Controller
         $order = $this->createNewOrder($params, $user, $product);
 
         $new_request = $this->makePlaceToPayRequest($order, $user);
-        
+
         if($new_request->status->status == "OK"){
             $url = $new_request->processUrl;
-            $url = str_replace("checkout-co.placetopay.com", "dev.placetopay.com/redirection",$url);
+            $order->request_id = $new_request->requestId;
+            $order->save();
             return Redirect::to($url);
         }  
-        return false;
+        $hash = base64_encode($order->id.";".$order->created_at.";".$order->user_id);
+
+        return redirect()->route('order.detail', $hash)->withErrors([
+            'popup' => 'Hubo un problema al intentar pagar, intentelo nuevamente.'
+        ]);
+
     }
 
     public function pay(Request $request)
     {
         $params = $request->all();
         $order = Order::where('id', $params['order_id'])->first();
-        $user = User::where('id', $order->id)->first();
+        $user = User::where('id', $order->user_id)->first();
 
         $new_request = $this->makePlaceToPayRequest($order, $user);
 
         if($new_request->status->status == "OK"){
-            return Redirect::to($new_request->processUrl);
+            $url = $new_request->processUrl;
+            $order->request_id = $new_request->requestId;
+            $order->save();
+            return Redirect::to($url);
         }  
-        return false;
+        $hash = base64_encode($order->id.";".$order->created_at.";".$order->user_id);
+
+        return redirect()->route('order.detail', $hash)->withErrors([
+            'popup' => 'Hubo un problema al intentar pagar, intentelo nuevamente.'
+        ]);
     }
 
     public function track()
@@ -59,7 +72,8 @@ class OrderController extends Controller
     {
         $params = $request->all();
         $user = User::where('email', '=', $params['email'])->first();
-        if(is_null($user)){
+        if(is_null($user))
+        {
             return Redirect::back()->withErrors([
                 'msg' => 'No se encontro la orden con los datos suministrados.'
             ]);
@@ -68,7 +82,8 @@ class OrderController extends Controller
             ->where('user_id', '=', $user->id)
             ->first();
 
-        if(is_null($order)){
+        if(is_null($order))
+        {
             return Redirect::back()->withErrors([
                 'msg' => 'No se encontro la orden con los datos suministrados.'
             ]);
@@ -89,8 +104,25 @@ class OrderController extends Controller
         $order = Order::where('id', $datos[0])->first();
         $product = Product::where('id', $order->product_id)->first();
 
+        if(!is_null($order->request_id))
+        {
+            $status_request = $this->checkOrderStatus($order);
+    
+            if($status_request->status->status != $order->status)
+            {
+                $order->status = $status_request->status->status;
+                if($status_request->status->status == 'APPROVED' || 
+                $status_request->status->status == 'PAYED')
+                {
+                    $order->status = 'PAYED';
+                }
+                $order->save();
+            }
+        }
+        
         $view_name = 'order.detail'; 
-        return view($view_name)->with('data', [
+        return view($view_name)->with('data', 
+        [
             "user" => $user,
             "order" => $order,
             "product" => $product,
@@ -130,19 +162,22 @@ class OrderController extends Controller
     {
         $login     = ENV('PLACE_TO_PAY_LOGIN');
         $secretKey = ENV('PLACE_TO_PAY_SECRET_KEY');
-        $seed      = date('c');
+        $seed = date('c');
 
-        if (function_exists('random_bytes')) {
+        if (function_exists('random_bytes')) 
+        {
             $nonce = bin2hex(random_bytes(16));
-        } elseif (function_exists('openssl_random_pseudo_bytes')) {
+        } elseif (function_exists('openssl_random_pseudo_bytes')) 
+        {
             $nonce = bin2hex(openssl_random_pseudo_bytes(16));
-        } else {
+        } else 
+        {
             $nonce = mt_rand();
         }
-
+        
         $nonceBase64 = base64_encode($nonce);
 
-        $tranKey = base64_encode(sha1($nonce.$seed.$secretKey));
+        $tranKey = base64_encode(sha1($nonce . $seed . $secretKey, true));
 
         $auth = [
             "login"   => $login,
@@ -152,9 +187,10 @@ class OrderController extends Controller
         ];
         $hash_order = base64_encode($order->id.";".$order->created_at.";".$user->id);
 
-        $payment = [
-            "reference"=> "$hash_order",
-            "description"=> "Orden de compra $hash_order",
+        $payment = 
+        [
+            "reference"=> "$order->id",
+            "description"=> "Orden de Compra $order->id",
             "amount"=> [
                 "currency"=> "COP",
                 "total"=> $order->quantity*$order->product_price
@@ -162,7 +198,8 @@ class OrderController extends Controller
             "allowPartial"=> false
         ];
 
-        $data = [
+        $data = 
+        [
             "locale" => "es_CO",
             "auth" => $auth,
             "payment" => $payment,
@@ -173,7 +210,48 @@ class OrderController extends Controller
         ];
         
         $new_request = Http::post(
-            'https://stoplight.io/mocks/placetopay-api/webcheckout-docs/10862976/api/session', 
+            ENV('PLACE_TO_PAY_URL').'/api/session/', 
+            $data
+        );
+        $new_request = json_decode($new_request);
+
+        return $new_request;
+    }
+
+    public function checkOrderStatus($order)
+    {
+        $login     = ENV('PLACE_TO_PAY_LOGIN');
+        $secretKey = ENV('PLACE_TO_PAY_SECRET_KEY');
+        $seed = date('c');
+
+        if (function_exists('random_bytes')) {
+            $nonce = bin2hex(random_bytes(16));
+        } elseif (function_exists('openssl_random_pseudo_bytes')) {
+            $nonce = bin2hex(openssl_random_pseudo_bytes(16));
+        } else {
+            $nonce = mt_rand();
+        }
+        
+        $nonceBase64 = base64_encode($nonce);
+
+        $tranKey = base64_encode(sha1($nonce . $seed . $secretKey, true));
+
+        $auth = 
+        [
+            "login"   => $login,
+            "tranKey" => $tranKey,
+            "seed"    => $seed,
+            "nonce"   => $nonceBase64,
+        ];
+
+        $data = 
+        [
+            "locale" => "es_CO",
+            "auth" => $auth,
+        ];
+        
+        $new_request = Http::post(
+            ENV('PLACE_TO_PAY_URL')."/api/session/$order->request_id", 
             $data
         );
         $new_request = json_decode($new_request);

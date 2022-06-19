@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->double('product_price');
             $table->string('status');
+            $table->string('request_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')
