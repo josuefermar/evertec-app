@@ -27,9 +27,11 @@ class OrderController extends Controller
         $order = $this->createNewOrder($params, $user, $product);
 
         $new_request = $this->makePlaceToPayRequest($order, $user);
-
+        
         if($new_request->status->status == "OK"){
-            return Redirect::to($new_request->processUrl);
+            $url = $new_request->processUrl;
+            $url = str_replace("checkout-co.placetopay.com", "dev.placetopay.com/redirection",$url);
+            return Redirect::to($url);
         }  
         return false;
     }

@@ -6,6 +6,18 @@
     <input type="hidden" 
         name="product_id" 
         value="{{$data['params']['product_id']}}">
+    <input type="hidden" 
+        name="name" 
+        value="{{$data['params']['name']}}">
+    <input type="hidden" 
+        name="email" 
+        value="{{$data['params']['email']}}">
+    <input type="hidden" 
+        name="mobile" 
+        value="{{$data['params']['mobile']}}">
+    <input type="hidden" 
+        name="quantity" 
+        value="{{$data['params']['quantity']}}">
 
     <div class="row justify-content-center">
         <div class="col-md-12 col-sm-2 row-element">
