@@ -16,39 +16,45 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($orders as $order)
+                    @if (count($orders) > 0)
+                        @foreach ($orders as $order)
+                            <tr>
+                                <td>{{$order->id}}</td>
+                                <td>
+                                    @if (in_array($order->status, array('PAYED')))
+                                        <span class="alert alert-success" role="alert">
+                                            PAGADA
+                                        </span>
+                                    @elseif(in_array($order->status, array('REJECTED', 
+                                        'FAILED')))
+                                        <span class="alert alert-danger" role="alert">
+                                            RECHAZADA
+                                        </span>
+                                    @elseif(in_array($order->status, array('PENDING')))
+                                        <span class="alert alert-warning" role="alert">
+                                            PENDIENTE
+                                        </span>
+                                    @else
+                                        <span class="alert alert-warning" role="alert">
+                                            CREADA
+                                        </span>                            
+                                    @endif   
+                                </td>
+                                <td>{{$order->created_at}}</td>
+                                <td>
+                                    <a href="{{route('order.detail', base64_encode($order->id.";".$order->created_at.";".$order->user_id))}}">
+                                        <button type="button" class="btn btn-primary">
+                                            Ver detalle
+                                        </button>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
                         <tr>
-                            <td>{{$order->id}}</td>
-                            <td>
-                                @if (in_array($order->status, array('PAYED')))
-                                    <span class="alert alert-success" role="alert">
-                                        PAGADA
-                                    </span>
-                                @elseif(in_array($order->status, array('REJECTED', 
-                                    'FAILED')))
-                                    <span class="alert alert-danger" role="alert">
-                                        RECHAZADA
-                                    </span>
-                                @elseif(in_array($order->status, array('PENDING')))
-                                    <span class="alert alert-warning" role="alert">
-                                        PENDIENTE
-                                    </span>
-                                @else
-                                    <span class="alert alert-warning" role="alert">
-                                        CREADA
-                                    </span>                            
-                                @endif   
-                            </td>
-                            <td>{{$order->created_at}}</td>
-                            <td>
-                                <a href="{{route('order.detail', base64_encode($order->id.";".$order->created_at.";".$order->user_id))}}">
-                                    <button type="button" class="btn btn-primary">
-                                        Ver detalle
-                                    </button>
-                                </a>
-                            </td>
+                            <td colspan="4" style="text-align: center;">Aun no hay ordenes de compra</td>
                         </tr>
-                    @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>
