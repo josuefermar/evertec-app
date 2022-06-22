@@ -16,7 +16,7 @@ Es necesario tener instalado los siguientes elementos para ejecutar el proyecto:
  
  
 Primero que nada es necesario realizar la configuración de la base de datos.
-Esta configuración se encuentra en el archivo *.env* del proyecto
+Esta configuración se encuentra en el archivo **_.env_** del proyecto
  
 ```bash
 DB_CONNECTION=mysql
@@ -66,14 +66,14 @@ En este proyecto no existe sistema de registro e inicio de sesión para los comp
 Después del login se redirecciona al dashboard principal del administrador.
  
 Los datos del administrador creado son:
-- Correo: admin@admin.com
-- Contraseña: Evertec.2022*
+- **Correo**: admin@admin.com
+- **Contraseña**: Evertec.2022*
  
 Las compras se pueden realizar sin registrarse o iniciar sesión, solo con los datos básicos se puede realizar una compra. El rastreo de las órdenes se realiza mediante el botón superior derecho del navbar.
  
 ## Links de interés dentro del aplicativo
 
-*Las siguientes urls apuntan a localhost puerto 8000.*
+**_Las siguientes urls apuntan a localhost puerto 8000._**
 
 - [Login Administrador](http://localhost:8000/login)
 - [Dashboard Administrador](http://localhost:8000/admin/dashboard)
