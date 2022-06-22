@@ -61,7 +61,7 @@ php artisan serve
  
 ## Nota importante
  
-En este proyecto no existe sistema de registro e inicio de sesión para los compradores, sólo para los administradores, por ende la url de login no se encuentra accesible por medio de algún botón. Para acceder al dashboard de administrador se utiliza url de [login](http://localhost:8000/login)
+En este proyecto no existe sistema de registro e inicio de sesión para los compradores, sólo para los administradores, por ende la url de login no se encuentra accesible por medio de algún botón. Para acceder al dashboard de administrador se utiliza url de [login](http://localhost:8000/login).
  
 Después del login se redirecciona al dashboard principal del administrador.
  
