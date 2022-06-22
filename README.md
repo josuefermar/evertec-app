@@ -72,7 +72,9 @@ Los datos del administrador creado son:
 Las compras se pueden realizar sin registrarse o iniciar sesión, solo con los datos básicos se puede realizar una compra. El rastreo de las órdenes se realiza mediante el botón superior derecho del navbar.
  
 ## Links de interés dentro del aplicativo
- 
+
+*Las siguientes urls apuntan a localhost puerto 8000.*
+
 - [Login Administrador](http://localhost:8000/login)
 - [Dashboard Administrador](http://localhost:8000/admin/dashboard)
 - [Listado de ordenes](http://localhost:8000/order/index)
