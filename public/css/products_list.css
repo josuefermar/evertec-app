@@ -23,7 +23,6 @@
 }
 .product-card {
     transition: transform .2s;
-    width: 290px;
     height: 460px;
     margin-left: 1%;
 }

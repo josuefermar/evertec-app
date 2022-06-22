@@ -2,7 +2,7 @@
 <div class="row justify-content-center">
     
     @foreach ($products as $product)        
-        <div class="product-card col-md-4 col-sm-2">
+        <div class="product-card col-md-3 col-sm-4">
             <a href="javascript:void(0);">
                 <div class="card">
                     <img class="card-img-top" 

@@ -9,6 +9,7 @@ Es necesario tener instalado los siguientes elementos para ejecutar el proyecto:
 
 - [Composer](https://getcomposer.org/download/)
 - [NPM](https://nodejs.org/es/download/)
+- Minimo PHP 8.0.2
 
 Ademas de esto es pertinente tener una base de datos MySQL.
 
@@ -30,10 +31,13 @@ DB_PASSWORD=
 Despues de configurada la base de datos es necesario ejecutar los siguientes comandos.
 
 ```bash
+npm install
 npm run production
 ```
 
 ```bash
+composer install
+encaso de que solicite update composer update
 php artisan migrate
 ```
 
