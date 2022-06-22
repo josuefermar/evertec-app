@@ -24,7 +24,7 @@
 .product-card {
     transition: transform .2s;
     height: 460px;
-    margin-left: 1%;
+    margin-left: 3%;
 }
 .product-card:hover {
     transform: scale(1.1); 
