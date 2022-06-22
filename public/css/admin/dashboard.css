@@ -28,3 +28,9 @@ a{
 .card{
     width: 18rem;
 }
+
+.card-img-top{
+    width: 65%;
+    margin: auto;
+    margin-top: 6%;
+}

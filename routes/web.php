@@ -29,21 +29,6 @@ Auth::routes([
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get(
-    '/admin/dashboard', 
-    [AdminController::class, 'dashboard']
-)->name('admin.dashboard');
-
-Route::get(
-    '/admin/orders', 
-    [AdminController::class, 'ordersIndex']
-)->name('admin.orders.index');
-
-Route::get(
-    '/admin/orders/detail/{hash}', 
-    [AdminController::class, 'orderDetail']
-)->name('admin.orders.detail');
-
 Route::post(
     '/checkout', 
     [HomeController::class, 'checkout']
@@ -53,6 +38,11 @@ Route::post(
     '/resume', 
     [HomeController::class, 'resume']
 )->name('resume');
+
+Route::get(
+    '/admin/dashboard', 
+    [AdminController::class, 'dashboard']
+)->name('admin.dashboard');
 
 Route::post(
     '/order/create', 
@@ -75,12 +65,11 @@ Route::post(
 )->name('order.search');
 
 Route::get(
+    '/order/index/{hash?}',
+    [OrderController::class, 'index']
+)->name('order.index');
+
+Route::get(
     '/order/detail/{hash}',
     [OrderController::class, 'detail']
 )->name('order.detail');
-
-
-Route::get(
-    '/order/check/status',
-    [OrderController::class, 'checkOrderStatus']
-)->name('order.check.status');

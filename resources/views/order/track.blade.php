@@ -9,7 +9,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">
-                            Ingresa tus datos para buscar tu orden de compra
+                            Ingresa tus datos para rastrear tus órdenes
                         </h5><br>
                         @if($errors->any())
                             <div class="alert alert-danger" 
@@ -23,13 +23,6 @@
                                 type="email" 
                                 name="email" 
                                 id="email">
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="order"># de orden</label>
-                            <input class="form-control" 
-                                type="text" 
-                                name="order" 
-                                id="order">
                         </div>
                         <div class="form-group search-group">
                             <button type="submit" 

@@ -7,12 +7,88 @@ use App\Models\Product;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
 class OrderController extends Controller
 {
+
+    public function track()
+    {
+        return view('order.track');
+    }
+
+    public function search(Request $request)
+    {
+        $params = $request->all();
+        $user = User::where('email', '=', $params['email'])->first();
+        if(is_null($user))
+        {
+            return Redirect::back()->withErrors([
+                'msg' => 'No se encontro informacion con los datos suministrados.'
+            ]);
+        }
+       
+        $hash = base64_encode($user->email);
+        return redirect()->route('order.index', $hash);
+    }
+
+    public function index($hash = null)
+    {
+        $orders = Order::orderBy('created_at', 'desc');
+        if(isset($hash) && $hash !=  null)
+        {
+            $email = base64_decode($hash);
+            $user = User::where('email', $email)->first();
+            $orders = Order::where('user_id',$user->id);
+        }elseif(!Auth::user())
+        {
+            return redirect()->route('login');
+        }
+
+        $orders = $orders->paginate(10);
+
+        return view('order/index')->with('orders', $orders);
+        
+    }
+
+    public function detail($hash)
+    {
+        $hash = base64_decode($hash);
+
+        $datos = explode(";", $hash);
+
+        $user = User::where('id', $datos[2])->first();
+        $order = Order::where('id', $datos[0])->first();
+        $product = Product::where('id', $order->product_id)->first();
+
+        if(!is_null($order->request_id))
+        {
+            $statusRequest = $this->checkOrderStatus($order);
+    
+            if($statusRequest->status->status != $order->status)
+            {
+                $order->status = $statusRequest->status->status;
+                if($statusRequest->status->status == 'APPROVED' || 
+                $statusRequest->status->status == 'PAYED')
+                {
+                    $order->status = 'PAYED';
+                }
+                $order->save();
+            }
+        }
+        
+        $viewName = 'order.detail'; 
+        return view($viewName)->with('data', 
+        [
+            "user" => $user,
+            "order" => $order,
+            "product" => $product,
+            "viewName" => $viewName
+        ]);
+    }
+
     public function create(Request $request)
     {
         $params = $request->all();
@@ -21,16 +97,17 @@ class OrderController extends Controller
 
         if(is_null($user))
         {
-            $user = $this->createNewUser($params);
+            $user = UserController::createNewUser($params);
         }
 
         $order = $this->createNewOrder($params, $user, $product);
 
-        $new_request = $this->makePlaceToPayRequest($order, $user);
+        $newRequest = $this->makePlaceToPayRequest($order, $user);
 
-        if($new_request->status->status == "OK"){
-            $url = $new_request->processUrl;
-            $order->request_id = $new_request->requestId;
+        if($newRequest->status->status == "OK")
+        {
+            $url = $newRequest->processUrl;
+            $order->request_id = $newRequest->requestId;
             $order->save();
             return Redirect::to($url);
         }  
@@ -48,11 +125,15 @@ class OrderController extends Controller
         $order = Order::where('id', $params['order_id'])->first();
         $user = User::where('id', $order->user_id)->first();
 
-        $new_request = $this->makePlaceToPayRequest($order, $user);
+        $order->status = 'CREATED';
+        $order->save();
 
-        if($new_request->status->status == "OK"){
-            $url = $new_request->processUrl;
-            $order->request_id = $new_request->requestId;
+        $newRequest = $this->makePlaceToPayRequest($order, $user);
+
+        if($newRequest->status->status == "OK")
+        {
+            $url = $newRequest->processUrl;
+            $order->request_id = $newRequest->requestId;
             $order->save();
             return Redirect::to($url);
         }  
@@ -63,86 +144,47 @@ class OrderController extends Controller
         ]);
     }
 
-    public function track()
+    public static function checkOrderStatus($order)
     {
-        return view('order.track');
-    }
+        $login     = ENV('PLACE_TO_PAY_LOGIN');
+        $secretKey = ENV('PLACE_TO_PAY_SECRET_KEY');
+        $seed = date('c');
 
-    public function search(Request $request)
-    {
-        $params = $request->all();
-        $user = User::where('email', '=', $params['email'])->first();
-        if(is_null($user))
+        if (function_exists('random_bytes'))
         {
-            return Redirect::back()->withErrors([
-                'msg' => 'No se encontro la orden con los datos suministrados.'
-            ]);
-        }
-        $order = Order::where('id', $params['order'])
-            ->where('user_id', '=', $user->id)
-            ->first();
-
-        if(is_null($order))
+            $nonce = bin2hex(random_bytes(16));
+        } elseif (function_exists('openssl_random_pseudo_bytes'))
         {
-            return Redirect::back()->withErrors([
-                'msg' => 'No se encontro la orden con los datos suministrados.'
-            ]);
-        }
-
-        $hash = base64_encode($order->id.";".$order->created_at.";".$user->id);
-        
-        return redirect()->route('order.detail', $hash);
-    }
-
-    public function detail($hash)
-    {
-        $hash = base64_decode($hash);
-
-        $datos = explode(";", $hash);
-
-        $user = User::where('id', $datos[2])->first();
-        $order = Order::where('id', $datos[0])->first();
-        $product = Product::where('id', $order->product_id)->first();
-
-        if(!is_null($order->request_id))
-        {
-            $status_request = $this->checkOrderStatus($order);
-    
-            if($status_request->status->status != $order->status)
-            {
-                $order->status = $status_request->status->status;
-                if($status_request->status->status == 'APPROVED' || 
-                $status_request->status->status == 'PAYED')
-                {
-                    $order->status = 'PAYED';
-                }
-                $order->save();
-            }
+            $nonce = bin2hex(openssl_random_pseudo_bytes(16));
+        } else {
+            $nonce = mt_rand();
         }
         
-        $view_name = 'order.detail'; 
-        return view($view_name)->with('data', 
+        $nonceBase64 = base64_encode($nonce);
+
+        $tranKey = base64_encode(sha1($nonce . $seed . $secretKey, true));
+
+        $auth = 
         [
-            "user" => $user,
-            "order" => $order,
-            "product" => $product,
-            "view_name" => $view_name
-        ]);
-    }
+            "login"   => $login,
+            "tranKey" => $tranKey,
+            "seed"    => $seed,
+            "nonce"   => $nonceBase64,
+        ];
 
-    protected function createNewUser($params)
-    {
-        $user = new User;
-        $user->name = $params['name'];
-        $user->email = $params['email'];
-        $user->mobile = $params['mobile'];
-        $password = Str::random(10);
-        $user->password = bcrypt($password);
+        $data = 
+        [
+            "locale" => "es_CO",
+            "auth" => $auth,
+        ];
+        
+        $newRequest = Http::post(
+            ENV('PLACE_TO_PAY_URL')."/api/session/$order->request_id", 
+            $data
+        );
+        $newRequest = json_decode($newRequest);
 
-        $user->save();
-        $user->assignRole('Customer');
-
-        return $user;
+        return $newRequest;
     }
 
     protected function createNewOrder($params, $user, $product)
@@ -185,7 +227,7 @@ class OrderController extends Controller
             "seed"    => $seed,
             "nonce"   => $nonceBase64,
         ];
-        $hash_order = base64_encode($order->id.";".$order->created_at.";".$user->id);
+        $hashOrder = base64_encode($order->id.";".$order->created_at.";".$user->id);
 
         $payment = 
         [
@@ -204,58 +246,18 @@ class OrderController extends Controller
             "auth" => $auth,
             "payment" => $payment,
             "expiration" => Carbon::now()->addDays(7),
-            "returnUrl" => "http://localhost:8000/order/detail/$hash_order",
+            "returnUrl" => "http://localhost:8000/order/detail/$hashOrder",
             "ipAddress" => "127.0.0.1",
             "userAgent" => "PlacetoPay Sandbox"
         ];
         
-        $new_request = Http::post(
+        $newRequest = Http::post(
             ENV('PLACE_TO_PAY_URL').'/api/session/', 
             $data
         );
-        $new_request = json_decode($new_request);
+        $newRequest = json_decode($newRequest);
 
-        return $new_request;
+        return $newRequest;
     }
-
-    public function checkOrderStatus($order)
-    {
-        $login     = ENV('PLACE_TO_PAY_LOGIN');
-        $secretKey = ENV('PLACE_TO_PAY_SECRET_KEY');
-        $seed = date('c');
-
-        if (function_exists('random_bytes')) {
-            $nonce = bin2hex(random_bytes(16));
-        } elseif (function_exists('openssl_random_pseudo_bytes')) {
-            $nonce = bin2hex(openssl_random_pseudo_bytes(16));
-        } else {
-            $nonce = mt_rand();
-        }
-        
-        $nonceBase64 = base64_encode($nonce);
-
-        $tranKey = base64_encode(sha1($nonce . $seed . $secretKey, true));
-
-        $auth = 
-        [
-            "login"   => $login,
-            "tranKey" => $tranKey,
-            "seed"    => $seed,
-            "nonce"   => $nonceBase64,
-        ];
-
-        $data = 
-        [
-            "locale" => "es_CO",
-            "auth" => $auth,
-        ];
-        
-        $new_request = Http::post(
-            ENV('PLACE_TO_PAY_URL')."/api/session/$order->request_id", 
-            $data
-        );
-        $new_request = json_decode($new_request);
-
-        return $new_request;
-    }
+    
 }

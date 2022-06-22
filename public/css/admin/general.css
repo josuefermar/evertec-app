@@ -9,3 +9,11 @@
     .hidden{
         display: none
     }
+
+    tbody tr td span.alert{
+        padding: 0rem 1rem
+    }
+
+    thead tr th:nth-child(2){
+        padding-left: 33px;
+    }

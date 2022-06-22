@@ -70,10 +70,12 @@
 
                                 <div class="dropdown-menu dropdown-menu-end" 
                                     aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" 
-                                        href="{{ route('admin.dashboard') }}">
-                                        Dashboard
-                                    </a>
+                                    @can('admin.dashboard')
+                                        <a class="dropdown-item" 
+                                            href="{{ route('admin.dashboard') }}">
+                                            Dashboard
+                                        </a>                                        
+                                    @endcan
                                     <a class="dropdown-item" 
                                         href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

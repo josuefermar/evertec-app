@@ -7,26 +7,27 @@
         <div class="col-md-12 col-sm-2 row-element">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title justify-content-center">
-                        <div>DETALLE DE LA ORDEN </div>
-                        @switch($data['order']->status)
-                        @case('PAYED')
-                            <div class="alert alert-success" role="alert">
-                                pagada
-                            </div>
-                            @break
-                        @case('REJECTED')
-                            <div class="alert alert-danger" role="alert">
-                                rechazada
-                            </div>
-                            @break
-                        @default
-                            <div class="alert alert-warning" role="alert">
-                                creada
-                            </div>
-                            @break
-                        @endswitch
-                    </h5>
+                    <div class="card-title justify-content-center">
+                        <h4>DETALLE DE LA ORDEN #{{$data['order']->id}}</h4>
+                        @if (in_array($data['order']->status, array('PAYED')))
+                            <h5 class="alert alert-success" role="alert">
+                                PAGADA
+                            </h5>
+                        @elseif(in_array($data['order']->status, array('REJECTED', 
+                            'FAILED')))
+                            <h5 class="alert alert-danger" role="alert">
+                                RECHAZADA
+                            </h5>
+                        @elseif(in_array($data['order']->status, array('PENDING')))
+                            <h5 class="alert alert-warning" role="alert">
+                                PENDIENTE
+                            </h5>
+                        @else
+                            <h5 class="alert alert-warning" role="alert">
+                                CREADA
+                            </h5>                            
+                        @endif
+                    </div>
                     <p class="card-text text-resume"><strong>Nombre:</strong> 
                         {{$data['user']->name}}
                     </p>
@@ -80,17 +81,22 @@
                             {{$errors->first()}}
                         </div>
                     @endif
-                    @if ($data['view_name'] == 'order.detail' && 
-                        ($data['order']->status == 'CREATED' || 
-                        $data['order']->status == 'REJECTED' || 
-                        $data['order']->status == 'FAILED'))
-                        <div class="form-group submit-group">
-                            <button type="submit" 
-                                class="btn btn-primary purchase-button">
-                                Proceder al pago
-                            </button>                            
-                        </div>
-                    @endif
+
+                    @guest
+                        @if (in_array($data['order']->status, array(
+                                'CREATED', 
+                                'REJECTED', 
+                                'FAILED', 
+                                'PENDING'
+                            )))
+                            <div class="form-group submit-group">
+                                <button type="submit" 
+                                    class="btn btn-primary purchase-button">
+                                    Proceder al pago
+                                </button>                            
+                            </div>
+                        @endif 
+                    @endguest
                 </div>
             </div>
         </div>

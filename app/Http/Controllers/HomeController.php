@@ -34,12 +34,12 @@ class HomeController extends Controller
         $params = $request->all();
         $product = Product::find($params["product_id"])->first();
 
-        $view_name = 'resume';
-        return view($view_name)->with('data', 
+        $viewName = 'resume';
+        return view($viewName)->with('data', 
         [
             "params" => $params,
             "product" => $product,
-            "view_name" => $view_name
+            "viewName" => $viewName
         ]);
     }
 

@@ -6,7 +6,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
-            <a href="{{route('admin.orders.index')}}">
+            <a href="{{route('order.index')}}">
                 <div class="card">
                     <img class="card-img-top" 
                     src="{{ asset('images/orders.svg') }}" 

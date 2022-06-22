@@ -71,15 +71,6 @@ label {
     padding: 4px;
 }
 
-.card-title{
-    display: flex;
-    flex-direction: row;
-}
-
-.card-title div:first-child{
-    margin-right: 20%;
-}
-
 .table thead tr th{
     text-align: center
 }
@@ -95,16 +86,17 @@ label {
 .centered{
     text-align: center;
 }
+
+.container a.navbar-brand{
+    color: black;
+}
+
+.container a.navbar-brand:hover{
+    color: black;
+}
+
 @media (max-width: 600px) {
     .card{
         width: 19rem;
-    }
-
-    .card-title{
-        display: block;
-    }
-
-    .card-title div:first-child{
-        margin-right: 0%;
     }
 }
