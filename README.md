@@ -32,17 +32,14 @@ Esto con la intención de generar los archivos necesarios para la ejecución
  
 ```bash
 npm install
+
 npm run production
 ```
  
 ```bash
 composer install
-```
- 
-En Caso de que se solicite un update
- 
-```bash
-composer update
+
+composer update // En caso de que se solicite un update
 ```
  
 Siguiente a esto generamos las migraciones necesarias de la base de datos para el correcto funcionamiento del proyecto.
