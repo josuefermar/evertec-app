@@ -8,23 +8,28 @@
 }
 .product-card .card{
     width: 18rem;
+    min-height: 440px;
 }
 .product-card a .card-title{
     font-weight: bold !important;
 }
 .card-img-top{
     width: 210px !important;
+    height: 210px;
     margin: auto;
-    margin-top: 5%;
+    margin-top: 10%;
     margin-bottom: 5%;
+    object-fit: contain;
 }
 .product-card {
     transition: transform .2s;
     width: 290px;
-    height: 575px;
+    height: 460px;
+    margin-left: 1%;
 }
 .product-card:hover {
     transform: scale(1.1); 
+    z-index: 10;
 }
 
 .purchase-button{
@@ -39,4 +44,14 @@
 
 .purchase-form{
     text-align: center;
+    position: absolute;
+    margin: auto;
+    bottom: 5%;
+    left: 35%;
+}
+
+@media (max-width: 600px) {
+    .product-card {
+        margin-left: -2%;
+    }
 }

@@ -3,9 +3,11 @@
 }
 .card-img-top{
     width: 210px !important;
+    height: 210px;
     margin: auto;
-    margin-top: 5%;
+    margin-top: 10%;
     margin-bottom: 5%;
+    object-fit: contain;
 }
 .form-group {
     margin-bottom: 1rem;

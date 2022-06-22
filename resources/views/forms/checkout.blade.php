@@ -56,7 +56,7 @@
                     <div class="form-group mb-2">
                         <label for="mobile">Celular</label>
                         <input class="form-control" 
-                            type="text" 
+                            type="number" 
                             name="mobile" 
                             id="mobile">
                     </div>

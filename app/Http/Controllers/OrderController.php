@@ -93,7 +93,7 @@ class OrderController extends Controller
     {
         $params = $request->all();
         $user = User::where('email', '=', $params['email'])->first();
-        $product = Product::find($params['product_id'])->first();
+        $product = Product::where('id', $params['product_id'])->first();
 
         if(is_null($user))
         {

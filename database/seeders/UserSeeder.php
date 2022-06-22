@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@admin.com',
             'mobile' => '3126770363',
-            'password' => bcrypt('Evertec.2020*')
+            'password' => bcrypt('Evertec.2022*')
         ])->assignRole('Admin');
     }
 }

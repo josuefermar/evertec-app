@@ -14,7 +14,7 @@
                     <div class="card-body">
                       <h5 class="card-title">
                         <button type="button" class="btn btn-primary">
-                            Ordenes de compra
+                            Órdenes de compra
                         </button>                            
                       </h5>
                     </div>

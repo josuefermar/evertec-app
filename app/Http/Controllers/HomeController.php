@@ -21,7 +21,7 @@ class HomeController extends Controller
     public function checkout(Request $request)
     {
         $params = $request->all();
-        $product = Product::find($params["product_id"])->first();
+        $product = Product::where('id', $params["product_id"])->first();
         return view('checkout')->with('data', 
         [
             "params" => $params,
@@ -32,7 +32,7 @@ class HomeController extends Controller
     public function resume(Request $request)
     {       
         $params = $request->all();
-        $product = Product::find($params["product_id"])->first();
+        $product = Product::where('id', $params["product_id"])->first();
 
         $viewName = 'resume';
         return view($viewName)->with('data', 
